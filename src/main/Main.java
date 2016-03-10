@@ -23,23 +23,8 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		boolean no_action_field = true;
-		for (Variable var : Field_Config.Variable.values()){
-			if (var.isActive()){
-				if (var.getName().equalsIgnoreCase("ACTION")) {
-					no_action_field = false; 
-					break;
-				}
-			}
-		}
-
-		if (no_action_field) {
-			System.err.println("There is no ACTION field in desired FIELDS or it is not an active field. "
-					+ "Please, add or activate the ACTION field in file \"Field_Config.java\", inside \"Active\" enum.");
-			System.exit(0);
-		}
-
-		Reader reader = new Reader("regras.csv");
+		Reader reader = new Reader();
+		reader.setReader("regras.csv");
 		ArrayList<LinkedHashMap<String, String>> rules;
 
 		long startTimeReading = System.nanoTime(); // Start timer for CSV reading

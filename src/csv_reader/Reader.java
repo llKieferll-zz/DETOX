@@ -15,28 +15,42 @@ import config_file.Field_Config.Variable;
 public class Reader {
 
 	private CSVReader reader = null;
-	private String filename = null;
 
-	public Reader(String filename){
+	public Reader(){
+			boolean no_action_field = true;
+			for (Variable var : Field_Config.Variable.values()){
+				if (var.isActive()){
+					if (var.getName().equalsIgnoreCase("ACTION")) {
+						no_action_field = false; 
+						break;
+					}
+				}
+			}
+
+			if (no_action_field) {
+				System.err.println("There is no ACTION field in desired FIELDS or it is not an active field. "
+						+ "Please, add or activate the ACTION field in file \"Field_Config.java\", inside \"Active\" enum.");
+				System.exit(0);
+			}
+	}
+	
+	public CSVReader getReader() {
+		return reader;
+	}
+
+	public void setReader(String filename) {		
 		try {
+			if(reader != null) this.reader.close();
 			this.reader = new CSVReader(new FileReader("./CSV/" + filename));
-			this.filename = filename;
 		} catch (FileNotFoundException e) {
 			System.out.println("Arquivo \"" + filename + "\" nao encontrado!");
+		} catch (IOException e) {
+			System.err.println("Erro ao tentar fechar o 'reader'");
+			e.printStackTrace();
 		}
 	}
-
-
-	public String getFilename() {
-		return filename;
-	}
-
-
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-
-
+	
+	
 	public ArrayList<LinkedHashMap<String, String>> readAll() {
 
 		String[] nextLine;
